@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import create_book,list_all_book,book_details,delete_book,edit_book,regstration,login_user,signout,BookList,BookCreate,Bookdetail,Bookupdate,Bookdelete
+from .views import create_book,list_all_book,book_details,delete_book,edit_book,regstration,login_user,signout,BookList,BookCreate,Bookdetail,Bookupdate,Bookdelete,Listbook,Createbook,Detailbook,Updatebook,Deletebook
 
 urlpatterns = [
     path('create',create_book,name="createbook"),
@@ -31,5 +31,10 @@ urlpatterns = [
     path('books/<int:pk>',Bookdetail.as_view(),name="bookdetail"),
     path('books/edit/<int:pk>',Bookupdate.as_view(),name="bookedit"),
     path('books/delete/<int:pk>',Bookdelete.as_view(),name="bookdelete"),
+    path('tbooks',Listbook.as_view(),name="templbooks"),
+    path('tbookcreate',Createbook.as_view(),name="tcreatebooks"),
+    path('tbooks/<int:pk>',Detailbook.as_view(),name="tbookdetail"),
+    path('tbooks/edit/<int:pk>',Updatebook.as_view(),name="tbookedit"),
+    path('tbooks/delete/<int:pk>',Deletebook.as_view(),name="tbookdelete"),
 
 ]

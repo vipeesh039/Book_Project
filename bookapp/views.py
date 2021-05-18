@@ -116,12 +116,93 @@ def signout(request):
 # class based view creating
 
 
+#customizing built in views
 
+# class ObjectMixin():
+#     model=None
+#     def get_object(self,id):
+#         return self.model.objects.get(id=id)
 
+class Listbook(TemplateView):
+    model=Book
+    template_name = "bookapp/listallbook.html"
+    context={}
+    def get(self, request, *args, **kwargs):
+        books=self.model.objects.all()
+        self.context["books"]=books
+        return render(request,self.template_name,self.context)
+
+class Createbook(TemplateView):
+    model=Book
+    template_name = "bookapp/createbook.html"
+    context={}
+    form_class=BookCreateForm
+    def get(self, request, *args, **kwargs):
+        self.context["form"]=self.form_class()
+        return render(request,self.template_name,self.context)
+    def post(self,request):
+        form=self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("templbooks")
+        else:
+            self.context["form"]=form
+            return render(request, self.template_name, self.context)
+
+    def get_object(self,id):
+         return self.model.objects.get(id=id)
+
+class Detailbook(TemplateView):
+    model=Book
+    template_name = "bookapp/bookdetails.html"
+    context={}
+    def get(self, request, *args, **kwargs):
+        print(kwargs)
+        id=kwargs.get("pk")
+        books=self.model.objects(id)
+        self.context["book"]=books
+        return render(request,self.template_name,self.context)
+
+class Updatebook(TemplateView):
+    model=Book
+    template_name = "bookapp/editbook.html"
+    form_class=BookCreateForm
+    context={}
+    lookup=0
+    def get_object(self,id):
+        return self.model.objects.get(id=id)
+    def get(self, request, *args, **kwargs):
+        self.lookup=kwargs.get("pk")
+        book=self.get_object(self.lookup)
+        form=self.form_class(instance=book)
+        self.context["form"]=form
+        return render(request,self.template_name,self.context)
+    def post(self,request,**kwargs):
+        self.lookup = kwargs.get("pk")
+        print(kwargs)
+        book = self.get_object(self.lookup)
+        form=self.form_class(instance=book,data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("templbooks")
+        else:
+            self.context["form"] = form
+            return render(request, self.template_name, self.context)
+
+class Deletebook(TemplateView):
+    model=Book
+    def get_object(self,id=id):
+        return self.model.objects.get(id=id)
+    def get(self, request, *args, **kwargs):
+        id=kwargs.get("pk")
+        book=self.get_object(id)
+        book.delete()
+        return redirect("templbooks")
+
+#django built in views
 
 class BookList(ListView):
     model = Book
-
     template_name = "bookapp/listallbook.html"
     context_object_name = "books"
 
